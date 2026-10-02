@@ -1,9 +1,11 @@
 package org.perfection.service;
 
 import org.perfection.domain.Stardrops;
+import org.springframework.stereotype.Service;
 
 import java.io.*;
 
+@Service
 public class StardropsService {
     private static final String STARDROPS_SAVE_FILE_NAME = "stardrops.txt";
 

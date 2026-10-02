@@ -1,6 +1,5 @@
 package org.perfection.domain;
 
-
 public class Stardrops {
     public static final int MAX_STARDROPS = 7;
     private int count;
@@ -18,6 +17,11 @@ public class Stardrops {
     }
 
     public void setCount(int count) {
+        if (count < 0) {
+            count = 0;
+        } else if (count > MAX_STARDROPS) {
+            count = MAX_STARDROPS;
+        }
         this.count = count;
     }
 
