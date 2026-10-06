@@ -1,13 +1,22 @@
 package org.perfection.service;
 
 import org.perfection.domain.Stardrops;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Path;
 
 @Service
 public class StardropsService {
-    private static final String STARDROPS_SAVE_FILE_NAME = "stardrops.txt";
+    private final Path saveFile;
+
+    public StardropsService(@Value("${stardrops.save-file:./stardrops.txt}") String saveFile) {
+        this.saveFile = Path.of(saveFile);
+    }
 
     public Stardrops getStardrops() {
         int count = readCountFromFile();
@@ -21,61 +30,28 @@ public class StardropsService {
     }
 
     public Stardrops add(int increase) {
-        Stardrops stardrops = getStardrops();
-        int updatedCount = stardrops.getCount() + increase;
-        stardrops.setCount(updatedCount);
-        saveCount(stardrops.getCount());
-        return stardrops;
+        return setCount(getStardrops().getCount() + increase);
     }
 
     private int readCountFromFile() {
-        File file = new File(STARDROPS_SAVE_FILE_NAME);
-
-        if (!file.exists()) {
-            return 0;
-        }
-
-        BufferedReader reader = null;
-
-        try {
-            reader = new BufferedReader(new FileReader(file));
+        try (BufferedReader reader = new BufferedReader(new FileReader(saveFile.toFile()))) {
             String line = reader.readLine();
 
-            if (line == null || line.trim().length() == 0) {
+            if (line == null || line.trim().isEmpty()) {
                 return 0;
             }
 
             return Integer.parseInt(line.trim());
-        } catch (IOException e) {
+        } catch (IOException | NumberFormatException e) {
             return 0;
-        } catch (NumberFormatException e) {
-            return 0;
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException ignored) {
-                }
-            }
         }
     }
 
     private void saveCount(int count) {
-        FileWriter writer = null;
-
-        try {
-            writer = new FileWriter(STARDROPS_SAVE_FILE_NAME);
+        try (FileWriter writer = new FileWriter(saveFile.toFile())) {
             writer.write(String.valueOf(count));
         } catch (IOException e) {
             throw new RuntimeException("Could not save Stardrop count.", e);
-        } finally {
-            if (writer != null) {
-                try {
-                    writer.close();
-                } catch (IOException ignored) {
-                }
-            }
         }
     }
-
 }
