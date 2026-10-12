@@ -40,4 +40,15 @@ class StardropsServiceTest {
         assertEquals(7, actualCount);
     }
 
+    @Test
+    void set_count_does_not_exceed_max() {
+        //GIVEN
+        StardropsService testStardropsService = new StardropsService(tempDir.resolve("test-stardrops.txt").toString());
+        //WHEN
+        Stardrops actualStardrops = testStardropsService.setCount(Stardrops.MAX_STARDROPS + 1);
+        //THEN
+        assertEquals(Stardrops.MAX_STARDROPS, actualStardrops.getCount());
+        assertEquals(Stardrops.MAX_STARDROPS, testStardropsService.getStardrops().getCount());
+    }
+
 }
