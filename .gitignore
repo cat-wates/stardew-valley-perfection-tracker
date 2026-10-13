@@ -41,3 +41,7 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+### Spring Shell ###
+/stardrops.txt
+/spring-shell.log
