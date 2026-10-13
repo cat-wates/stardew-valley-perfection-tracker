@@ -15,6 +15,13 @@ class StardropsServiceTest {
     Stardrops startingStardrops = new Stardrops(1);
 
     @Test
+    void getStardrops_returns_0_if_file_is_null() {
+        StardropsService testStardropsService = new StardropsService(tempDir.resolve("test-stardrops.txt").toString());
+        assertEquals(0, testStardropsService.getStardrops().getCount());
+    }
+
+    //add happy path
+    @Test
     void add_increments_count() {
         //GIVEN
         int increase = 1;
